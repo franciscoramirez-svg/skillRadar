@@ -306,12 +306,12 @@ with st.sidebar:
     )
 
     api_key = st.text_input(
-        "🔑 API Key OpenWeatherMap",
+        "🔑 API Key (WeatherAPI)",
         type="password",
         placeholder="Pega tu key aquí",
     )
     if api_key:
-        os.environ["OPENWEATHER_API_KEY"] = api_key
+        os.environ["WEATHERAPI_KEY"] = api_key
 
     ciudad = st.text_input(
         "Ubicaci\u00f3n", value="Veracruz",
