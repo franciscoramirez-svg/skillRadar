@@ -399,7 +399,7 @@ if errores:
 with st.spinner("Obteniendo datos climatológicos..."):
     clima = obtener_clima(ciudad)
 
-if clima:
+if clima.get("ok"):
     temp = clima["temp"]
     humedad = clima["humidity"]
     st.sidebar.markdown(
@@ -412,11 +412,18 @@ else:
     humedad = st.sidebar.number_input(
         "Humedad Relativa (%)", value=75.0, step=1.0, max_value=100.0
     )
-    st.sidebar.markdown(
-        "<div style='color:var(--muted); font-size:0.75rem;'>"
-        "\u2139\ufe0f Sin API key — datos manuales</div>",
-        unsafe_allow_html=True,
-    )
+    if "error" in clima:
+        st.sidebar.markdown(
+            f"<div style='color:var(--danger); font-size:0.75rem;'>"
+            f"\u26a0\ufe0f {clima['error']}</div>",
+            unsafe_allow_html=True,
+        )
+    else:
+        st.sidebar.markdown(
+            "<div style='color:var(--muted); font-size:0.75rem;'>"
+            "\u2139\ufe0f Sin API key — datos manuales</div>",
+            unsafe_allow_html=True,
+        )
 
 wbgt = calcular_wbgt(temp, humedad)
 
