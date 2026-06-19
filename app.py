@@ -306,10 +306,9 @@ with st.sidebar:
     )
 
     api_key = st.text_input(
-        "API Key OpenWeatherMap",
+        "🔑 API Key OpenWeatherMap",
         type="password",
-        placeholder="Opcional",
-        label_visibility="collapsed",
+        placeholder="Pega tu key aquí",
     )
     if api_key:
         os.environ["OPENWEATHER_API_KEY"] = api_key
