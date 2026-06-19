@@ -319,6 +319,27 @@ with st.sidebar:
         label_visibility="collapsed",
     )
 
+    # ── Clima en vivo (se muestra incluso sin archivo) ────────
+    with st.spinner("Consultando clima..."):
+        clima = obtener_clima(ciudad)
+
+    if clima.get("ok"):
+        temp = clima["temp"]
+        humedad = clima["humidity"]
+        st.markdown(
+            f"<div style='color:var(--primary); font-size:0.85rem; margin-top:8px;'>"
+            f"\U0001f324 {clima['city']}: {temp}°C, {humedad}% HR</div>",
+            unsafe_allow_html=True,
+        )
+    else:
+        if "error" in clima:
+            st.markdown(
+                f"<div style='color:var(--danger); font-size:0.72rem; margin-top:8px;'>"
+                f"\u26a0\ufe0f {clima['error']}</div>",
+                unsafe_allow_html=True,
+            )
+    # ──────────────────────────────────────────────────────────
+
     st.markdown(
         "<hr style='margin:18px 0; border-color:var(--line);'/>",
         unsafe_allow_html=True,
@@ -395,35 +416,19 @@ if errores:
         st.caption(f"  • {err}")
     st.stop()
 
-# ─── Clima ───────────────────────────────────────────────────────────────────
-with st.spinner("Obteniendo datos climatológicos..."):
-    clima = obtener_clima(ciudad)
-
-if clima.get("ok"):
-    temp = clima["temp"]
-    humedad = clima["humidity"]
+# ─── Si el clima en vivo falló, pedir datos manuales ──────────
+if not clima.get("ok"):
     st.sidebar.markdown(
-        f"<div style='color:var(--primary); font-size:0.85rem; margin-top:12px;'>"
-        f"\U0001f324 {clima['city']}: {temp}°C, {humedad}% HR</div>",
+        "<hr style='margin:8px 0; border-color:var(--line);'/>",
         unsafe_allow_html=True,
     )
-else:
     temp = st.sidebar.number_input("Temperatura (°C)", value=30.0, step=0.5)
     humedad = st.sidebar.number_input(
         "Humedad Relativa (%)", value=75.0, step=1.0, max_value=100.0
     )
-    if "error" in clima:
-        st.sidebar.markdown(
-            f"<div style='color:var(--danger); font-size:0.75rem;'>"
-            f"\u26a0\ufe0f {clima['error']}</div>",
-            unsafe_allow_html=True,
-        )
-    else:
-        st.sidebar.markdown(
-            "<div style='color:var(--muted); font-size:0.75rem;'>"
-            "\u2139\ufe0f Sin API key — datos manuales</div>",
-            unsafe_allow_html=True,
-        )
+else:
+    temp = clima["temp"]
+    humedad = clima["humidity"]
 
 wbgt = calcular_wbgt(temp, humedad)
 
