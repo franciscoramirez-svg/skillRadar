@@ -1,5 +1,26 @@
 import os
+import sys
 from datetime import datetime
+
+# ── Headless server fixes (Render / no display) ──────────────
+os.environ.setdefault("MPLBACKEND", "Agg")
+os.environ.setdefault("STREAMLIT_THEME_BASE", "dark")
+os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
+# Prevent interactive backends on headless servers
+import matplotlib as _mpl
+_mpl.use("Agg")
+# Speed up font cache (avoid long build on first import)
+import matplotlib.font_manager as _fm
+try:
+    _fm._load_fontmanager(try_read_cache=False)
+except Exception:
+    pass
+# ──────────────────────────────────────────────────────────────
+
+# ── Headless render: force Agg backend before any matplotlib import ──
+os.environ.setdefault("MPLBACKEND", "Agg")
+os.environ.setdefault("STREAMLIT_THEME_BASE", "dark")
+# ──────────────────────────────────────────────────────────────────────
 
 import pandas as pd
 import plotly.express as px
